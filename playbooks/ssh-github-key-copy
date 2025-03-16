@@ -1,0 +1,10 @@
+---
+- name: Set authorized keys taken from URL
+  hosts: all
+  become: yes
+  tasks:
+    - name: Set authorized keys taken from URL using lookup
+      ansible.posix.authorized_key:
+        user: toor
+        state: present
+        key: "{{ lookup('url', 'https://github.com/maximiliangewers.keys', split_lines=False) }}"
