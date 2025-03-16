@@ -1,4 +1,4 @@
-### Add GitHub SSH Key to Server for Access
+### Add GitHub SSH to Server for Access
 
 This playbook takes your github.pub key and adds them to the target server to allow for ssh.
 This can be used to create a ssh key for login from a machine or for ansible (Two seperate keys are recommended)
@@ -13,6 +13,3 @@ In order to use this playbook you will need to log into the server with user and
 
 ### TODO 
 - Turn github url into variable
-
-### Playbook reference
-https://docs.ansible.com/ansible/latest/collections/ansible/posix/authorized_key_module.html#return-values
