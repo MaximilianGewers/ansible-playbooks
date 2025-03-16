@@ -13,3 +13,6 @@ In order to use this playbook you will need to log into the server with user and
 
 ### TODO 
 - Turn github url into variable
+
+### Playbook reference
+https://docs.ansible.com/ansible/latest/collections/ansible/posix/authorized_key_module.html#return-values
