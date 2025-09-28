@@ -18,7 +18,6 @@
 
 # Commit & PR workflow
 - Use [Conventional Commits](https://www.conventionalcommits.org/) for every commit message (e.g., `feat: add system update playbook`).
-- Squash or amend local commits to maintain clean history before opening a PR.
 - PR titles should also follow the Conventional Commit format and summarize the change at a high level.
 - In PR descriptions, summarize functional changes, mention affected playbooks, and note any new variables or inventory requirements.
 
