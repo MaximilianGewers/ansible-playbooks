@@ -1,8 +1,23 @@
 ---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: ../../collections/requirements.yml
 driver:
-  name: default
+  name: delegated
 platforms:
   - name: instance
-    # you might want to add your own variables here based on what provisioning
-    # you are doing like:
-    # image: quay.io/centos/centos:stream8
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      callbacks_enabled: profile_tasks
+  inventory:
+    hosts:
+      all:
+        hosts:
+          instance:
+            ansible_connection: local
+            ansible_python_interpreter: "{{ ansible_playbook_python }}"
+verifier:
+  name: ansible
