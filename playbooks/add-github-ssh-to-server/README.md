@@ -21,9 +21,3 @@ access for yourself or other trusted operators on a fresh machine.
    ```bash
    ansible-playbook -i inventory.ini playbooks/add-github-ssh-to-server/main.yaml
    ```
-
-## Customization tips
-- Replace the hard-coded GitHub username with your own profile URL to install different
-  keys.
-- Adjust the `user` parameter to grant access to a different local account on the host.
-- Combine with host facts or group variables if you need per-environment credentials.
