@@ -6,7 +6,7 @@ name: "homelab"
 readme: README.md
 version: 0.0.1
 authors:
-  - your name <example@domain.com>
+  - your name <example@domain.com> # TO-DO: update with your name and email
 
 description: Collection for gewers.homelab playbook project
 
