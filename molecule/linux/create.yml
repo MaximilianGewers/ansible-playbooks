@@ -4,20 +4,19 @@
   connection: local
   gather_facts: false
   tasks:
-    - name: Populate instance config
-      ansible.builtin.set_fact:
-        instance_conf:
-          - instance: instance
-            address: localhost
-            user: root
-            port: 0
-            identity_file: ~
-
-    - name: Write instance config
-      ansible.builtin.copy:
-        content: |
-          # Molecule managed
-
-          {{ instance_conf | to_nice_yaml }}
-        dest: "{{ molecule_instance_config }}"
-        mode: "0600"
+    - name: Create molecule instance(s)
+      community.docker.docker_container:
+        name: instance
+        image: quay.io/ansible/ubuntu-systemd:jammy
+        pull: true
+        state: started
+        recreate: false
+        command: /usr/sbin/init
+        privileged: true
+        tmpfs:
+          - /run
+          - /tmp
+        volumes:
+          - /sys/fs/cgroup:/sys/fs/cgroup:ro
+        env:
+          container: docker

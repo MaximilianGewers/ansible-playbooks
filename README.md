@@ -49,12 +49,11 @@ of ansible-core.
 
 ## Local testing
 
-Install the Python tooling required by Molecule from the provided requirements
-file, and then execute the linux scenario:
+Ensure Docker is available locally, install the Molecule tooling with Docker support, and then execute the linux scenario:
 
 ```bash
 python -m pip install --upgrade pip
-python -m pip install -r requirements-dev.txt
+python -m pip install ansible molecule "molecule-plugins[docker]"
 ansible-galaxy collection install -r collections/requirements.yml --force
 molecule test -s linux
 ```

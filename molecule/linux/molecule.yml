@@ -4,9 +4,20 @@ dependency:
   options:
     requirements-file: ../../collections/requirements.yml
 driver:
-  name: delegated
+  name: docker
 platforms:
   - name: instance
+    image: quay.io/ansible/ubuntu-systemd:jammy
+    pre_build_image: true
+    privileged: true
+    command: /usr/sbin/init
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    tmpfs:
+      - /run
+      - /tmp
+    environment:
+      container: docker
 provisioner:
   name: ansible
   config_options:
@@ -17,7 +28,7 @@ provisioner:
       all:
         hosts:
           instance:
-            ansible_connection: local
-            ansible_python_interpreter: "{{ ansible_playbook_python }}"
+            ansible_connection: docker
+            ansible_python_interpreter: /usr/bin/python3
 verifier:
   name: ansible

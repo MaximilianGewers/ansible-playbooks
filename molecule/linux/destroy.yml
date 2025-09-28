@@ -4,7 +4,8 @@
   connection: local
   gather_facts: false
   tasks:
-    - name: Remove instance config
-      ansible.builtin.file:
-        path: "{{ molecule_instance_config }}"
+    - name: Destroy molecule instance(s)
+      community.docker.docker_container:
+        name: instance
         state: absent
+        force_kill: true
