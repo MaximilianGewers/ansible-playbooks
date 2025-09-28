@@ -49,12 +49,12 @@ of ansible-core.
 
 ## Local testing
 
-Install the Python tooling required by Molecule, including the delegated driver
-plugin, and then execute the linux scenario:
+Install the Python tooling required by Molecule from the provided requirements
+file, and then execute the linux scenario:
 
 ```bash
 python -m pip install --upgrade pip
-pip install ansible molecule "molecule-plugins[delegated]"
+python -m pip install -r requirements-dev.txt
 ansible-galaxy collection install -r collections/requirements.yml --force
 molecule test -s linux
 ```
