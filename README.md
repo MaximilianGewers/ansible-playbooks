@@ -1,27 +1,49 @@
-# Ansible Playbooks
+# Gewers Homelab Ansible Project
 
-Automation recipes for repeatable home lab maintenance tasks. Each playbook targets a
-specific bit of day-to-day server administration, such as keeping systems patched or
-bootstrapping SSH access for new machines.
+## Included content/ Directory Structure
 
-## Requirements
-- [Ansible](https://docs.ansible.com/) 2.12 or newer on the control node.
-- SSH access to the managed hosts (usually with privilege escalation enabled).
-- An inventory file describing the hosts you want to target.
+The directory structure follows best practices recommended by the Ansible
+community. Feel free to customize this template according to your specific
+project requirements.
 
-## Repository layout
-- `playbooks/add-github-ssh-to-server/` – Grants a server login user the public keys
-  published on a GitHub account.
-- `playbooks/update-linux-deps/` – Runs unattended package upgrades and reboots hosts if
-  the kernel requests it.
+```
+ ansible-project/
+ |── .devcontainer/
+ |    └── docker/
+ |        └── devcontainer.json
+ |    └── podman/
+ |        └── devcontainer.json
+ |    └── devcontainer.json
+ |── .github/
+ |    └── workflows/
+ |        └── tests.yml
+ |    └── ansible-code-bot.yml
+ |── .vscode/
+ |    └── extensions.json
+ |── collections/
+ |   └── requirements.yml
+ |   └── ansible_collections/
+ |       └── project_org/
+ |           └── project_repo/
+ |               └── README.md
+ |               └── roles/sample_role/
+ |                         └── README.md
+ |                         └── tasks/main.yml
+ |── inventory/
+ |   |── hosts.yml
+ |   |── argspec_validation_inventory.yml
+ |   └── groups_vars/
+ |   └── host_vars/
+ |── ansible-navigator.yml
+ |── ansible.cfg
+ |── devfile.yaml
+ |── linux_playbook.yml
+ |── network_playbook.yml
+ |── README.md
+ |── site.yml
+```
 
-## Usage
-1. Update your Ansible inventory so it includes the hosts you want to manage.
-2. From the repository root, run the desired playbook. For example:
-   ```bash
-   ansible-playbook -i inventory.ini playbooks/update-linux-deps/main.yaml
-   ```
-3. Review the output and logs to confirm the tasks completed successfully.
+## Compatible with Ansible-lint
 
-See each playbook directory for playbook-specific variables, prerequisites, and optional
-post-run steps.
+Tested with ansible-lint >=24.2.0 releases and the current development version
+of ansible-core.
