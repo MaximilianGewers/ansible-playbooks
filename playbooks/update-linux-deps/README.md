@@ -18,9 +18,3 @@ only when the kernel requests it, and cleaning up orphaned dependencies afterwar
 ```bash
 ansible-playbook -i inventory.ini playbooks/update-linux-deps/main.yaml
 ```
-
-## Customization tips
-- Limit the play to a host group (for example `--limit webservers`) to stagger upgrades.
-- Add notifications to chat/monitoring tooling by extending the handler section after the
-  reboot task.
-- Tweak the `apt` tasks to pin package versions or skip kernel updates if needed.
