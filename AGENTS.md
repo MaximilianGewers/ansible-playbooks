@@ -16,9 +16,11 @@
 - Validate syntax with `ansible-playbook <playbook>/main.yaml --syntax-check` before committing.
 - For playbooks with dependencies, dry-run with `--check` against a staging inventory if feasible.
 
-# Pull requests
-- Summarize functional changes and mention affected playbooks.
-- Note any new variables or inventory requirements in the PR description.
+# Commit & PR workflow
+- Use [Conventional Commits](https://www.conventionalcommits.org/) for every commit message (e.g., `feat: add system update playbook`).
+- Squash or amend local commits to maintain clean history before opening a PR.
+- PR titles should also follow the Conventional Commit format and summarize the change at a high level.
+- In PR descriptions, summarize functional changes, mention affected playbooks, and note any new variables or inventory requirements.
 
 # Additional context
 - Target hosts generally require privilege escalation; confirm `become` configuration when adding tasks.
