@@ -1,15 +1,29 @@
-### Add GitHub SSH to Server for Access
+# Add GitHub SSH Keys to a Server
 
-This playbook takes your github.pub key and adds them to the target server to allow for ssh.
-This can be used to create a ssh key for login from a machine or for ansible (Two seperate keys are recommended)
+This playbook pulls the public keys that are published on a GitHub account and adds them
+to a user's `authorized_keys` file. It is a quick way to bootstrap passwordless SSH
+access for yourself or other trusted operators on a fresh machine.
 
-### Steps to setup SSH key Github
-1. Generate a new SSH key using: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=windows
-2. Go to https://github.com/settings/keys and enter the public key there.
-3. (For machine login to prevent passphrase prompt) Run ssh-add ~/.ssh/{SSH_PRIV_KEY} to add the key to yout store
+## What it does
+- Downloads the `*.keys` listing from the specified GitHub profile.
+- Ensures those keys are present for the configured system user via
+  `ansible.posix.authorized_key`.
 
-### Note
-In order to use this playbook you will need to log into the server with user and pass. After that you can use the ssh key. 
+## Requirements
+- The target host must already have the user account (defaults to `toor`).
+- Outbound HTTPS access from the control node to `github.com`.
+- Privilege escalation on the managed host if the target user owns protected files.
 
-### TODO 
-- Turn github url into variable
+## Usage
+1. Edit `main.yaml` and set the `user` and `key` values to match the target account and
+   GitHub profile you want to authorize.
+2. Run the playbook against your inventory:
+   ```bash
+   ansible-playbook -i inventory.ini playbooks/add-github-ssh-to-server/main.yaml
+   ```
+
+## Customization tips
+- Replace the hard-coded GitHub username with your own profile URL to install different
+  keys.
+- Adjust the `user` parameter to grant access to a different local account on the host.
+- Combine with host facts or group variables if you need per-environment credentials.
