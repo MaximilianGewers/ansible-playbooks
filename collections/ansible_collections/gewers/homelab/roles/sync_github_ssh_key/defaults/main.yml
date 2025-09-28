@@ -1,0 +1,4 @@
+---
+# Default configuration for syncing a GitHub SSH public key into an authorized_keys file.
+sync_github_ssh_key_user: toor
+sync_github_ssh_key_source_url: https://github.com/maximiliangewers.keys

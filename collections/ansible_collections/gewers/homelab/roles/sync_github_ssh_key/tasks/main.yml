@@ -1,0 +1,6 @@
+---
+- name: Ensure GitHub public key is authorized
+  ansible.posix.authorized_key:
+    user: "{{ sync_github_ssh_key_user }}"
+    state: present
+    key: "{{ lookup('ansible.builtin.url', sync_github_ssh_key_source_url, split_lines=False) }}"

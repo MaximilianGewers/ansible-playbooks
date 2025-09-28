@@ -47,3 +47,8 @@ project requirements.
 
 Tested with ansible-lint >=24.2.0 releases and the current development version
 of ansible-core.
+
+## Available roles
+
+- `gewers.homelab.sync_github_ssh_key`: Syncs SSH public keys from a configurable GitHub profile into an account's
+  `authorized_keys` file using the `ansible.posix.authorized_key` module.
