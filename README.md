@@ -37,8 +37,7 @@ project requirements.
  |── ansible-navigator.yml
  |── ansible.cfg
  |── devfile.yaml
- |── linux_playbook.yml
- |── network_playbook.yml
+ |── maintenance.yml
  |── README.md
  |── site.yml
 ```
@@ -48,7 +47,11 @@ project requirements.
 Tested with ansible-lint >=24.2.0 releases and the current development version
 of ansible-core.
 
-## Available roles
+## Available roles and playbooks
 
 - `gewers.homelab.sync_github_ssh_key`: Syncs SSH public keys from a configurable GitHub profile into an account's
   `authorized_keys` file using the `ansible.posix.authorized_key` module.
+- `gewers.homelab.update_linux_deps`: Applies package upgrades on Debian-based hosts, reboots when required, and
+  optionally removes unused dependencies.
+- `maintenance.yml`: Runs both roles against all non-network hosts (hosts not in the `switches` group) to keep SSH keys
+  up to date and ensure operating systems receive routine package maintenance.

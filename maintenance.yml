@@ -1,0 +1,7 @@
+---
+- name: Perform routine maintenance
+  hosts: "all:!switches"
+  become: true
+  roles:
+    - role: gewers.homelab.sync_github_ssh_key
+    - role: gewers.homelab.update_linux_deps
