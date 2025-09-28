@@ -3,33 +3,47 @@
   hosts: localhost
   connection: local
   gather_facts: false
-  # no_log: "{{ molecule_no_log }}"
   tasks:
-    # TODO: Developer must implement and populate 'server' variable
+    - name: Pull required container images
+      community.docker.docker_image:
+        name: "{{ item.image }}"
+        source: pull
+      loop: "{{ molecule_yml.platforms }}"
 
-    - name: Create instance config
-      when: server.changed | default(false) | bool  # noqa no-handler
-      block:
-        - name: Populate instance config dict  # noqa jinja
-          ansible.builtin.set_fact:
-            instance_conf_dict: {}
-            # instance': "{{ }}",
-            # address': "{{ }}",
-            # user': "{{ }}",
-            # port': "{{ }}",
-            # 'identity_file': "{{ }}", }
-          with_items: "{{ server.results }}"
-          register: instance_config_dict
+    - name: Ensure Molecule instance(s) are running
+      community.docker.docker_container:
+        name: "{{ item.name }}"
+        hostname: "{{ item.name }}"
+        image: "{{ item.image }}"
+        state: started
+        recreate: true
+        command: {{ item.command | default(omit) }}
+        privileged: {{ item.privileged | default(false) }}
+        tty: {{ item.tty | default(false) }}
+        env: {{ item.environment | default({}) }}
+        volumes: {{ item.volumes | default([]) }}
+        tmpfs: {{ item.tmpfs | default([]) }}
+      loop: "{{ molecule_yml.platforms }}"
+      register: server
 
-        - name: Convert instance config dict to a list
-          ansible.builtin.set_fact:
-            instance_conf: "{{ instance_config_dict.results | map(attribute='ansible_facts.instance_conf_dict') | list }}"
+    - name: Build instance configuration
+      ansible.builtin.set_fact:
+        instance_conf: "{{ (instance_conf | default([])) + [
+          {
+            'instance': item.item.name,
+            'address': item.item.address | default(item.item.name),
+            'user': item.item.ansible_user | default('root'),
+            'port': item.item.ansible_port | default('22'),
+            'identity_file': item.item.identity_file | default('')
+          }
+        ] }}"
+      loop: "{{ server.results }}"
 
-        - name: Dump instance config
-          ansible.builtin.copy:
-            content: |
-              # Molecule managed
+    - name: Dump instance config
+      ansible.builtin.copy:
+        content: |
+          # Molecule managed
 
-              {{ instance_conf | to_json | from_json | to_yaml }}
-            dest: "{{ molecule_instance_config }}"
-            mode: "0600"
+          {{ instance_conf | to_json | from_json | to_yaml }}
+        dest: "{{ molecule_instance_config }}"
+        mode: "0600"
