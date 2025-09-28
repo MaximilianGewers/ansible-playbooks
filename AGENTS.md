@@ -15,6 +15,8 @@
 # Testing
 - Validate syntax with `ansible-playbook <playbook>/main.yaml --syntax-check` before committing.
 - For playbooks with dependencies, dry-run with `--check` against a staging inventory if feasible.
+- Run the following commands to test the different playbooks:
+  - `molecule test --scenario-name maintenance`
 
 # Commit & PR workflow
 - Use [Conventional Commits](https://www.conventionalcommits.org/) for every commit message (e.g., `feat: add system update playbook`).
