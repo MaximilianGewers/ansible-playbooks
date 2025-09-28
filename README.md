@@ -47,6 +47,18 @@ project requirements.
 Tested with ansible-lint >=24.2.0 releases and the current development version
 of ansible-core.
 
+## Local testing
+
+Install the Python tooling required by Molecule, including the delegated driver
+plugin, and then execute the linux scenario:
+
+```bash
+python -m pip install --upgrade pip
+pip install ansible molecule "molecule-plugins[delegated]"
+ansible-galaxy collection install -r collections/requirements.yml --force
+molecule test -s linux
+```
+
 ## Available roles and playbooks
 
 - `gewers.homelab.sync_github_ssh_key`: Syncs SSH public keys from a configurable GitHub profile into an account's
