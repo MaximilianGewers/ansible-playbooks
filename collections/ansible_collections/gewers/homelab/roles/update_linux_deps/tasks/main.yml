@@ -1,0 +1,23 @@
+---
+- name: Upgrade packages and clean dependencies
+  become: true
+  block:
+    - name: Perform a dist-upgrade
+      ansible.builtin.apt:
+        upgrade: dist
+        update_cache: true
+
+    - name: Check if a reboot is required
+      ansible.builtin.stat:
+        path: "{{ update_linux_deps_reboot_path }}"
+        get_checksum: false
+      register: update_linux_deps_reboot_required
+
+    - name: Reboot the server if required
+      ansible.builtin.reboot:
+      when: update_linux_deps_reboot_required.stat.exists
+
+    - name: Remove dependencies that are no longer required
+      ansible.builtin.apt:
+        autoremove: true
+      when: update_linux_deps_autoremove | bool

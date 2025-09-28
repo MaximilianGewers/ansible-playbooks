@@ -15,7 +15,12 @@ which requirements are needed.
 
 ## Included content
 
-Please check the included content on the
+This collection currently provides the following roles:
+
+- `gewers.homelab.run`
+- `gewers.homelab.update_linux_deps`
+
+For the most up-to-date list of plugins and roles, see the
 [Ansible Galaxy page for this collection](https://galaxy.ansible.com/gewers/homelab).
 
 ## Using this collection
