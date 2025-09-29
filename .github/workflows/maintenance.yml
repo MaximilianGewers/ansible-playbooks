@@ -1,0 +1,72 @@
+name: test: maintenance playbook
+
+on:
+  push:
+    paths:
+      - maintenance.yml
+      - .github/workflows/maintenance.yml
+      - .github/actions/ansible-setup/**
+      - tests/**
+  pull_request:
+    paths:
+      - maintenance.yml
+      - .github/workflows/maintenance.yml
+      - .github/actions/ansible-setup/**
+      - tests/**
+
+jobs:
+  maintenance:
+    name: Maintenance smoke test (ansible ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Ansible tooling
+        uses: ./.github/actions/ansible-setup
+
+      - name: Validate maintenance playbook syntax
+        run: ansible-playbook maintenance.yml --syntax-check
+
+      - name: Apply maintenance playbook
+        run: |
+          ansible-playbook maintenance.yml \
+            -i tests/inventory/hosts.ini \
+            --diff | tee maintenance.log
+
+      - name: Verify GitHub SSH key was applied
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          authorized_keys = Path('~/.ssh/authorized_keys').expanduser()
+          content = authorized_keys.read_text()
+          if 'vagrant insecure public key' not in content:
+              raise SystemExit('Expected test SSH key to be present in authorized_keys')
+          PY
+
+      - name: Assert maintenance playbook completed without failures
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          data = Path('maintenance.log').read_text()
+          match = re.search(r"PLAY RECAP \\*\n([^\n]+)", data)
+          if not match:
+              raise SystemExit('Unable to locate PLAY RECAP in Ansible output')
+          recap_line = match.group(1)
+          ok = re.search(r"ok=(\\d+)", recap_line)
+          failed = re.search(r"failed=(\\d+)", recap_line)
+          if not ok or not failed:
+              raise SystemExit(f'Could not parse recap line: {recap_line}')
+          if int(ok.group(1)) == 0:
+              raise SystemExit('Maintenance playbook did not execute any tasks')
+          if int(failed.group(1)) != 0:
+              raise SystemExit(f'Maintenance playbook reported failures: {recap_line}')
+          PY
