@@ -1,18 +1,12 @@
-name: test: maintenance playbook
+name: test: maintenance playbook (ubuntu matrix)
 
 on:
-  push:
-    paths:
-      - maintenance.yml
-      - .github/workflows/maintenance.yml
-      - .github/actions/ansible-setup/**
-      - tests/**
   pull_request:
     paths:
       - maintenance.yml
       - .github/workflows/maintenance.yml
       - .github/actions/ansible-setup/**
-      - tests/**
+      - tests/maintenance/**
 
 jobs:
   maintenance:
@@ -33,10 +27,10 @@ jobs:
       - name: Validate maintenance playbook syntax
         run: ansible-playbook maintenance.yml --syntax-check
 
-      - name: Apply maintenance playbook
+      - name: Apply maintenance playbook against test inventory
         run: |
           ansible-playbook maintenance.yml \
-            -i tests/inventory/hosts.ini \
+            -i tests/maintenance/inventory/hosts.ini \
             --diff | tee maintenance.log
 
       - name: Verify GitHub SSH key was applied

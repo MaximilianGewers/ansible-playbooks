@@ -1,5 +1,5 @@
 ---
-- name: Perform routine maintenance
+- name: Perform routine maintenance tasks
   hosts: "all:!switches"
   become: true
   roles:
