@@ -15,6 +15,9 @@
     "apparmor=unconfined",
     "--hostname=ansible-dev-container"
   ],
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
   "updateRemoteUserUID": true,
   "customizations": {
     "vscode": {
