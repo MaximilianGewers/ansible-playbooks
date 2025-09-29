@@ -15,8 +15,7 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-22.04
-          - ubuntu-20.04
+          - ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,8 +27,6 @@ jobs:
         run: ansible-playbook maintenance.yml --syntax-check
 
       - name: Apply maintenance playbook against test inventory
-        env:
-          ANSIBLE_FORCE_COLOR: "0"
         run: |
           ansible-playbook maintenance.yml \
             -i tests/maintenance/inventory/hosts.ini \
