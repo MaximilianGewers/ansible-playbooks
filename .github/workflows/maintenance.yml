@@ -1,4 +1,4 @@
-name: test: maintenance playbook
+name: "test: maintenance playbook"
 
 on:
   pull_request:
