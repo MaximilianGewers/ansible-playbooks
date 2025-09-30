@@ -34,34 +34,49 @@ jobs:
 
       - name: Verify GitHub SSH key was applied
         run: |
-          python - <<'PY'
-          from pathlib import Path
+          set -euo pipefail
 
-          authorized_keys = Path('~/.ssh/authorized_keys').expanduser()
-          if not authorized_keys.exists():
-              raise SystemExit('Expected ~/.ssh/authorized_keys to exist after maintenance playbook run')
-          content = authorized_keys.read_text()
-          if 'vagrant insecure public key' not in content:
-              raise SystemExit('Expected test SSH key to be present in authorized_keys')
-          PY
+          authorized_keys="${HOME}/.ssh/authorized_keys"
+          if [[ ! -f "${authorized_keys}" ]]; then
+            echo "Expected ${authorized_keys} to exist after maintenance playbook run" >&2
+            exit 1
+          fi
+
+          if ! grep -q 'vagrant insecure public key' "${authorized_keys}"; then
+            echo "Expected test SSH key to be present in authorized_keys" >&2
+            exit 1
+          fi
 
       - name: Assert maintenance playbook completed without failures
         run: |
-          python - <<'PY'
-          import re
-          from pathlib import Path
+          set -euo pipefail
 
-          data = Path('maintenance.log').read_text()
-          match = re.search(r"PLAY RECAP \\*\n([^\n]+)", data)
-          if not match:
-              raise SystemExit('Unable to locate PLAY RECAP in Ansible output')
-          recap_line = match.group(1)
-          ok = re.search(r"ok=(\\d+)", recap_line)
-          failed = re.search(r"failed=(\\d+)", recap_line)
-          if not ok or not failed:
-              raise SystemExit(f'Could not parse recap line: {recap_line}')
-          if int(ok.group(1)) == 0:
-              raise SystemExit('Maintenance playbook did not execute any tasks')
-          if int(failed.group(1)) != 0:
-              raise SystemExit(f'Maintenance playbook reported failures: {recap_line}')
-          PY
+          recap_line=$(awk '/^PLAY RECAP/ { getline; print; exit }' maintenance.log)
+          if [[ -z "${recap_line}" ]]; then
+            echo 'Unable to locate PLAY RECAP in Ansible output' >&2
+            exit 1
+          fi
+
+          if [[ ${recap_line} =~ ok=([0-9]+) ]]; then
+            ok_count=${BASH_REMATCH[1]}
+          else
+            echo "Could not parse ok count from recap line: ${recap_line}" >&2
+            exit 1
+          fi
+
+          if [[ ${recap_line} =~ failed=([0-9]+) ]]; then
+            failed_count=${BASH_REMATCH[1]}
+          else
+            echo "Could not parse failed count from recap line: ${recap_line}" >&2
+            exit 1
+          fi
+
+          if [[ ${ok_count} -eq 0 ]]; then
+            echo 'Maintenance playbook did not execute any tasks' >&2
+            exit 1
+          fi
+
+          if [[ ${failed_count} -ne 0 ]]; then
+            echo "Maintenance playbook reported failures: ${recap_line}" >&2
+            exit 1
+          fi
