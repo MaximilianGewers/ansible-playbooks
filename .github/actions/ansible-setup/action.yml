@@ -1,0 +1,22 @@
+name: Ansible setup
+description: Install Ansible and collection requirements for tests
+runs:
+  using: composite
+  steps:
+    - name: Upgrade pip
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+    - name: Install Ansible tooling
+      shell: bash
+      run: |
+        python -m pip install ansible-core ansible-lint
+    - name: Install collection requirements
+      shell: bash
+      run: |
+        if [ -f collections/requirements.yml ]; then
+          ansible-galaxy collection install \
+            --force \
+            --collections-path collections \
+            -r collections/requirements.yml
+        fi
